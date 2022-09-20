@@ -27,9 +27,23 @@ import "./App.css";
 import { useStateContext } from "./context/ContextProvider";
 
 const App = () => {
-  const { activeMenu } = useStateContext();
+  const {
+    activeMenu,
+    themeSettings,
+    setThemeSettings,
+    currentColor,
+    currentMode,
+    setCurrentColor,
+    setCurrentMode,
+  } = useStateContext();
+
+  useEffect(() => {
+    const currentThemeColor = localStorage.getItem("colorMode");
+    const currentThemeMode = localStorage.getItem("ThemeMode");
+  }, []);
+
   return (
-    <div>
+    <div className={currentMode === "Dark" ? "dark" : "light"}>
       <BrowserRouter>
         <div className="flex relative dark:bg-main-dark-bg">
           <div className="fixed right-4 bottom-4" style={{ zIndex: "1000" }}>
@@ -37,7 +51,8 @@ const App = () => {
               <button
                 type="button"
                 className="text-3xl p-3 hover:drop-shadow-xl hover:bg-light0gray text-white"
-                style={{ background: "blue", borderRadius: "50%" }}
+                style={{ background: currentColor, borderRadius: "50%" }}
+                onClick={() => setThemeSettings(true)}
               >
                 <FiSettings />
               </button>
@@ -53,7 +68,7 @@ const App = () => {
             </div>
           )}
           <div
-            className={`dark:bg-main-bg by-main-bg min-h-screen w-full${
+            className={`dark:bg-main-dark-bg by-main-bg min-h-screen w-full ${
               activeMenu ? "md:ml-72 " : "flex-2"
             }`}
           >
@@ -61,6 +76,7 @@ const App = () => {
               <Navbar />
             </div>
             <div>
+              {themeSettings && <ThemeSettings />}
               <Routes>
                 {/* Dashboard */}
                 <Route path="/" element={<Ecommerce />} />
@@ -87,6 +103,7 @@ const App = () => {
                 <Route path="/stacked" element={<Stacked />} />
               </Routes>
             </div>
+            <Footer />
           </div>
         </div>
       </BrowserRouter>
